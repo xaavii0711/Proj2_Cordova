@@ -47,9 +47,16 @@ function edita(e){
 
 }
 
-function guardar(e) {
-    
+$("#guardaButton").click(guardar);
+function guardar(){
+    var editTaskList = $("#nouNOM").val();
+    botoStr = "<button class='liEliminar'>Eliminar</button>";
+    $(toEDIT).html(editTaskList+botoStr);
+    $('ul li button').click(function(e){
+        var tar = e.target || e.srcElement;
+        $(tar.parentElement).remove();
+        return false;
+    });
 }
-let botonNOM = $("#canviNOM").click(function(){
 
-});
+
