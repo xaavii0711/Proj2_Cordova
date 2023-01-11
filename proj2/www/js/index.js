@@ -29,10 +29,27 @@ function onDeviceReady() {
 }
 let boton = $("#afegir").click(function(){
     let addTask = prompt("Escribe el nombre de la nueva tarea: ");
-    $("ul").append("<li data-icon='delete'><a>"+addTask+"</a><button class='liEliminar'>Elimina</button></li>");
+    var atr = $("ul").append("<li><a href='#page1'>"+addTask+"<button class='liEliminar'>Elimina</button></a></li>");
+    $("a",atr).click(edita);
     $("ul").listview("refresh");
     $('ul li button').click(function(e){
         var caller = e.target || e.srcElement;
-        $(caller.parentElement).remove();
+        $(caller.parentElement.parentElement).remove();
+        return false;
     });
+    
+});
+
+var toEDIT = null;
+function edita(e){
+    var caller = e.target || e.srcElement;
+    toEDIT = caller;
+
+}
+
+function guardar(e) {
+    
+}
+let botonNOM = $("#canviNOM").click(function(){
+
 });
