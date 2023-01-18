@@ -27,16 +27,54 @@ function onDeviceReady() {
     console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
     document.getElementById('deviceready').classList.add('ready');
 }
+
+
+let saveTasklist = JSON.parse(localStorage.getItem("task"));
+
+if(saveTasklist == null) {
+    saveTasklist = [];
+}
+else{
+    for (let i = 0; i < saveTasklist.length; i++) {
+        var atr = $("ul").append("<li><a href='#page1'>"+saveTasklist[i]+"<button class='liEliminar' data-role='none'>Elimina</button></a></li>");
+    }
+    $('#homePage').ready(function() {
+        $("a",atr).click(edita);
+        $("ul").listview("refresh");
+        $('ul li a button').click(function(e){
+        var caller = e.target || e.srcElement;
+        let tarea = $(caller.parentElement).text();
+        for (let i = 0; i < saveTasklist.length; i++) {
+            if(tarea == saveTasklist[i] + "Elimina") {
+                saveTasklist.splice(i,1);
+                localStorage.setItem("task", JSON.stringify(saveTasklist));
+            }
+        }
+        $(caller.parentElement).remove();
+        return false;
+        });
+    });
+
+}
 let boton = $("#afegir").click(function(){
     let addTask = prompt("Escribe el nombre de la nueva tarea: ");
-    var atr = $("ul").append("<li><a href='#page1'>"+addTask+"<button class='liEliminar'>Elimina</button></a></li>");
+    var atr = $("ul").append("<li><a href='#page1'>"+addTask+"<button class='liEliminar' data-role='none'>Elimina</button></a></li>");
     $("a",atr).click(edita);
     $("ul").listview("refresh");
-    $('ul li button').click(function(e){
+    $('ul li a button').click(function(e){
         var caller = e.target || e.srcElement;
-        $(caller.parentElement.parentElement).remove();
+        let tarea = $(caller.parentElement).text();
+        for (let i = 0; i < saveTasklist.length; i++) {
+            if(tarea == saveTasklist[i] + "Elimina") {
+                saveTasklist.splice(i,1);
+                localStorage.setItem("task", JSON.stringify(saveTasklist));
+            }
+        }
+        $(caller.parentElement).remove();
         return false;
     });
+    saveTasklist.push(addTask);
+    localStorage.setItem("task",JSON.stringify(saveTasklist));
     
 });
 
@@ -44,19 +82,26 @@ var toEDIT = null;
 function edita(e){
     var caller = e.target || e.srcElement;
     toEDIT = caller;
-
 }
 
-$("#guardaButton").click(guardar);
-function guardar(){
-    var editTaskList = $("#nouNOM").val();
+$("#guardaButton").click(saveText);
+function saveText(){
+    var editarTarea = $("#nouNOM").val();
+
+    let tarea = $(toEDIT.parentElement).text();
+    for (let i = 0; i < saveTasklist.length; i++) {
+        if(tarea == saveTasklist[i] + "Elimina") {
+            saveTasklist[i] = editarTarea;
+            localStorage.setItem("task", JSON.stringify(saveTasklist));
+        }
+    }
+
     botoStr = "<button class='liEliminar'>Eliminar</button>";
-    $(toEDIT).html(editTaskList+botoStr);
+    $(toEDIT).html(editarTarea+botoStr);
     $('ul li button').click(function(e){
         var tar = e.target || e.srcElement;
         $(tar.parentElement).remove();
         return false;
     });
 }
-
 
